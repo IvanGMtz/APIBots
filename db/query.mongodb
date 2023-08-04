@@ -3,11 +3,42 @@ db.createCollection("usuario",{
     capped:true,
     size: 700,
     max: 5,
-    collation: {
-      locale: "en",
-      numericOrdering: true
+    validator:{
+      $jsonSchema:{
+        bsonType: 'object',
+        additionalProperties: false,
+        required: ['nombre', 'edad'],
+        properties:{
+          _id: {
+            bsonType: 'objectId', 
+            description: 'El _id es generado automáticamente por MongoDB'
+          },
+          nombre:{
+            bsonType: 'string',
+            description: ' El nombre es obligatorio y debe ser un string'
+          },
+          apellido:{
+            bsonType: 'string',
+            description: ' El apellido debe ser un string'
+          },
+          edad:{
+            bsonType: 'int',
+            description: ' El edad es obligatorio y debe ser un numero'
+          }
+        },
+        allOf:[
+          {
+            properties:{
+              email:{
+                bsonType: 'string',
+                description: ' El email es obligatorio y debe ser un string'
+              }
+            }
+          }
+        ],
+      },
     }
-})
+});
 
 use("db_limit_mongo");
 db.usuario.insertMany([
