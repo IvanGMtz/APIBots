@@ -7,11 +7,15 @@ db.createCollection("usuario",{
       $jsonSchema:{
         bsonType: 'object',
         additionalProperties: false,
-        required: ['nombre', 'edad'],
+        required: [ 'cc','nombre', 'edad'],
         properties:{
           _id: {
             bsonType: 'objectId', 
             description: 'El _id es generado automáticamente por MongoDB'
+          },
+          cc:{
+            bsonType: 'int',
+            description: ' El cc es obligatorio y debe ser un int'
           },
           nombre:{
             bsonType: 'string',
@@ -31,7 +35,11 @@ db.createCollection("usuario",{
             properties:{
               email:{
                 bsonType: 'string',
-                description: ' El email es obligatorio y debe ser un string'
+                description: ' El email no es obligatorio y debe ser un string'
+              },
+              apodo:{
+                bsonType: 'string',
+                description: ' El apodo no es obligatorio y debe ser un string'
               }
             }
           }
