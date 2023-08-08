@@ -14,7 +14,7 @@ appMiCampusVerify.use(async(req, res, next)=>{
     console.log(req.data);
     let Clone = JSON.stringify(classToPlain(plainToClass(User, {}, { ignoreDecorators: true })));
     let Verify = (Clone === JSON.stringify(req.data))
-    console.log(Verify);
+    if (!Verify) res.status(406).send({status:406, message:"No autorizado"});
     // classToPlain(Verify)
     // try {
     //     let result = await usuario.insertOne(req.body);
