@@ -3,13 +3,19 @@ import {plainToClass, classToPlain } from 'class-transformer';
 import {User} from "../routers/storage/usuarios.js"
 import { Router } from "express";
 import {con} from "../db/atlas.js";
-const appMiCampus = Router();
+const appMiCampusVerify = Router();
 let db = await con();
 let usuario = db.collection("usuario");
 
-appMiCampus.use(async(req, res, next)=>{
+appMiCampusVerify.use(async(req, res, next)=>{
     if (!req.rateLimit) return;
+    delete req.data.iat;
+    delete req.data.exp;
     console.log(req.data);
+    let Clone = JSON.stringify(classToPlain(plainToClass(User, {}, { ignoreDecorators: true })));
+    let Verify = (Clone === JSON.stringify(req.data))
+    console.log(Verify);
+    // classToPlain(Verify)
     // try {
     //     let result = await usuario.insertOne(req.body);
     //     console.log(result);
@@ -21,4 +27,4 @@ appMiCampus.use(async(req, res, next)=>{
     next();
 });
 
-export default appMiCampus;
+export {appMiCampusVerify};

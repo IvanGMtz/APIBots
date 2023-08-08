@@ -1,6 +1,6 @@
 import express from "express";
 import {limitGet} from "../limit/config.js";
-import appMiCampus from "../middleware/campus.js"
+import {appMiCampusVerify} from "../middleware/campus.js"
 
 const appCampus = express.Router();
 
@@ -13,7 +13,7 @@ const appCampus = express.Router();
 //     res.send(result);
 // });
 
-appCampus.post("/", limitGet(), appMiCampus,   async(req, res)=>{
+appCampus.post("/", limitGet(), appMiCampusVerify,   async(req, res)=>{
     res.send(":)");
 });
 
