@@ -19,7 +19,8 @@ db.createCollection("usuario",{
           },
           nombre:{
             bsonType: 'string',
-            description: ' El nombre es obligatorio y debe ser un string'
+            description: ' El nombre es obligatorio y debe ser un string',
+            pattern: "^[a-zA-Z ]+$"
           },
           apellido:{
             bsonType: 'string',

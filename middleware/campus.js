@@ -1,30 +1,30 @@
 import 'reflect-metadata';
 import {plainToClass, classToPlain } from 'class-transformer';
+import {validate} from 'class-validator';
 import {User} from "../routers/storage/usuarios.js"
 import { Router } from "express";
-import {con} from "../db/atlas.js";
 const appMiCampusVerify = Router();
-let db = await con();
-let usuario = db.collection("usuario");
+const appDTOData = Router();
+
 
 appMiCampusVerify.use(async(req, res, next)=>{
     if (!req.rateLimit) return;
-    delete req.data.iat;
-    delete req.data.exp;
-    console.log(req.data);
+    const {iat, exp, ...payload} = req.data;
     let Clone = JSON.stringify(classToPlain(plainToClass(User, {}, { ignoreDecorators: true })));
-    let Verify = (Clone === JSON.stringify(req.data))
-    if (!Verify) res.status(406).send({status:406, message:"No autorizado"});
-    // classToPlain(Verify)
-    // try {
-    //     let result = await usuario.insertOne(req.body);
-    //     console.log(result);
-    //     res.send(":)");
-    // } catch (error) {
-    //     console.log(error.errInfo.details.schemaRulesNotSatisfied[0]);
-    //     res.send(":(");
-    // }
-    next();
+    let Verify = (Clone === JSON.stringify(payload));
+    (!Verify) ? res.status(406).send({status: 406, message: "No Autorizado"}) : next();
 });
 
-export {appMiCampusVerify};
+appDTOData.use( async(req,res,next) => {
+    try {
+        let data = plainToClass(User, req.body);
+        await validate(data);
+        req.body = JSON.parse(JSON.stringify(data));
+        req.data = undefined;
+        next();
+    } catch (err) {
+        res.status(err.status).send(err)
+    }
+});
+
+export {appMiCampusVerify, appDTOData};
